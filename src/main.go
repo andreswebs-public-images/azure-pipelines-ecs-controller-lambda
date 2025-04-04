@@ -29,8 +29,11 @@ func init() {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
 
+	taskCfg = new(ECSTaskConfig)
 	taskCfg.ReadFromEnv()
+
 	adoCfg.ReadFromEnv()
+	adoCfg = new(ADOConfig)
 
 	ctx := context.TODO()
 	cfg, err := config.LoadDefaultConfig(ctx)
