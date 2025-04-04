@@ -32,8 +32,8 @@ func init() {
 	taskCfg = new(ECSTaskConfig)
 	taskCfg.ReadFromEnv()
 
-	adoCfg.ReadFromEnv()
 	adoCfg = new(ADOConfig)
+	adoCfg.ReadFromEnv()
 
 	ctx := context.TODO()
 	cfg, err := config.LoadDefaultConfig(ctx)
