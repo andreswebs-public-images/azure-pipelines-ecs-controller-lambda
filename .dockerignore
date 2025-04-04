@@ -1,0 +1,14 @@
+**/.DS_Store
+**/.dockerignore
+**/.editorconfig
+**/.envrc
+**/.git
+**/.gitignore
+**/.vscode
+**/bin
+**/events
+**/docker-compose*
+**/compose.y*ml
+**/Dockerfile*
+*LICENSE
+README.md
