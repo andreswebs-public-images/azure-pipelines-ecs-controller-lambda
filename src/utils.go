@@ -7,6 +7,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
 	"os"
@@ -100,7 +101,7 @@ func ReadEnvVarWithDefault(name string, defaultVal string) string {
 }
 
 // ADOCallback calls back to the Azure DevOps service connection with the process outcome.
-func ADOCallback(client *http.Client, config *ADOCallbackConfig) (res *http.Response, err error) {
+func ADOCallback(client *http.Client, config *ADOCallbackConfig) (data any, err error) {
 	token := config.Config.GetAuth(config.Payload.AuthToken)
 
 	headers := map[string]string{
@@ -132,12 +133,35 @@ func ADOCallback(client *http.Client, config *ADOCallbackConfig) (res *http.Resp
 		req.Header.Set(k, v)
 	}
 
-	res, err = client.Do(req)
+	res, err := client.Do(req)
 	if err != nil {
 		err = fmt.Errorf("failed to execute HTTP request: %w", err)
 		return
 	}
+
+	data, err = parseUnknownResponse(res)
+	return
+}
+
+func parseUnknownResponse(res *http.Response) (data any, err error) {
 	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+		err = fmt.Errorf("unexpected status code: %d", res.StatusCode)
+		return
+	}
+
+	bodyBytes, err := io.ReadAll(res.Body)
+	if err != nil {
+		err = fmt.Errorf("failed to read response body: %w", err)
+		return
+	}
+
+	err = json.Unmarshal(bodyBytes, &data)
+	if err != nil {
+		err = fmt.Errorf("failed to unmarshal response body: %w", err)
+		return
+	}
 
 	return
 }
