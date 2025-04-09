@@ -100,20 +100,26 @@ func ReadEnvVarWithDefault(name string, defaultVal string) string {
 	return value
 }
 
-// ADOCallback calls back to the Azure DevOps service connection with the process outcome.
+/*
+ADOCallback calls back to the Azure DevOps service connection with the process outcome.
+
+See:
+
+https://learn.microsoft.com/en-us/azure/devops/pipelines/process/invoke-checks?view=azure-devops
+*/
 func ADOCallback(client *http.Client, config *ADOCallbackConfig) (data any, err error) {
 	token := config.Config.GetAuth(config.Payload.AuthToken)
 
 	headers := map[string]string{
 		"Accept":        "application/json",
-		"Authorization": fmt.Sprintf("Basic %s", token),
+		"Authorization": fmt.Sprintf("Bearer %s", token),
 	}
 
 	body := map[string]string{
-		"name":  "TaskCompleted",
-		"jobId": config.Payload.JobID,
-		// "taskId": config.Payload.TaskInstanceID,
-		// "result": config.Result,
+		"name":   "TaskCompleted",
+		"jobId":  config.Payload.JobID,
+		"taskId": config.Payload.TaskInstanceID,
+		"result": config.Result,
 	}
 
 	bodyBytes, err := json.Marshal(body)
