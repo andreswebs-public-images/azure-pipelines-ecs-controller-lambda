@@ -152,7 +152,7 @@ func ADOCallback(client *http.Client, config *ADOCallbackConfig) (data any, err 
 func parseUnknownResponse(res *http.Response) (data any, err error) {
 	defer res.Body.Close()
 
-	if res.StatusCode != http.StatusOK {
+	if res.StatusCode < 200 || res.StatusCode > 399 {
 		err = fmt.Errorf("unexpected status code: %d", res.StatusCode)
 		return
 	}
