@@ -107,7 +107,7 @@ See:
 
 https://learn.microsoft.com/en-us/azure/devops/pipelines/process/invoke-checks?view=azure-devops
 */
-func ADOCallback(client *http.Client, config *ADOCallbackConfig) (data any, err error) {
+func ADOCallback(client *http.Client, config *ADOCallbackConfig) (data string, err error) {
 	token := config.Config.GetAuth(config.Payload.AuthToken)
 
 	headers := map[string]string{
@@ -145,11 +145,16 @@ func ADOCallback(client *http.Client, config *ADOCallbackConfig) (data any, err 
 		return
 	}
 
-	data, err = parseUnknownResponse(res)
+	resBytes, err := readResponse(res)
+	if err != nil {
+		return
+	}
+
+	data = string(resBytes)
 	return
 }
 
-func parseUnknownResponse(res *http.Response) (data any, err error) {
+func readResponse(res *http.Response) (data []byte, err error) {
 	defer res.Body.Close()
 
 	if res.StatusCode < 200 || res.StatusCode > 399 {
@@ -157,15 +162,9 @@ func parseUnknownResponse(res *http.Response) (data any, err error) {
 		return
 	}
 
-	bodyBytes, err := io.ReadAll(res.Body)
+	data, err = io.ReadAll(res.Body)
 	if err != nil {
 		err = fmt.Errorf("failed to read response body: %w", err)
-		return
-	}
-
-	err = json.Unmarshal(bodyBytes, &data)
-	if err != nil {
-		err = fmt.Errorf("failed to unmarshal response body: %w", err)
 		return
 	}
 

@@ -98,7 +98,7 @@ func handler(ctx context.Context, event Event) error {
 			return err
 		}
 
-		slog.Info("ADO response", slog.Any("res", callbackResponse))
+		slog.Info("ADO response", slog.Any("res", string(callbackResponse)))
 	}
 
 	return nil
