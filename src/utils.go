@@ -110,10 +110,10 @@ func ADOCallback(client *http.Client, config *ADOCallbackConfig) (data any, err 
 	}
 
 	body := map[string]string{
-		"name":   "TaskCompleted",
-		"taskId": config.Payload.TaskInstanceID,
-		"jobId":  config.Payload.JobID,
-		"result": config.Result,
+		"name":  "TaskCompleted",
+		"jobId": config.Payload.JobID,
+		// "taskId": config.Payload.TaskInstanceID,
+		// "result": config.Result,
 	}
 
 	bodyBytes, err := json.Marshal(body)

@@ -73,7 +73,7 @@ ADOEventsURL generates an Azure DevOps API URL for the events endpoint.
 
 See:
 
-https://learn.microsoft.com/en-us/rest/api/azure/devops
+https://learn.microsoft.com/en-us/rest/api/azure/devops/distributedtask/events/post-event?view=azure-devops-rest-7.1&tabs=HTTP
 */
 func (payload *ADOPayload) ADOEventsURL(instance string, apiVersion string) string {
 	return fmt.Sprintf("https://%s/%s/_apis/distributedtask/hubs/%s/plans/%s/events?api-version=%s", instance, payload.ProjectID, payload.HubName, payload.PlanID, apiVersion)
