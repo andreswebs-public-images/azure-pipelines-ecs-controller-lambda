@@ -97,14 +97,14 @@ ReadFromEnv reads the following required environment variables
 and populates the struct with the values:
   - ADO_DOMAIN: The ADO domain (default: dev.azure.com)
   - ADO_ORG: The ADO organization
-  - ADO_API_VERSION: The ADO API version (default: 7.1-preview.3)
+  - ADO_API_VERSION: The ADO API version (default: 7.1)
   - ADO_AUTH_USERNAME: Username for the 'basic auth' configuration, is ignored by the API
 */
 func (config *ADOConfig) ReadFromEnv() {
 	adoDomain := ReadEnvVarWithDefault("ADO_DOMAIN", "dev.azure.com")
 	adoOrg := ReadRequiredEnvVar("ADO_ORG")
 	config.Instance = fmt.Sprintf("%s/%s", adoDomain, adoOrg)
-	config.APIVersion = ReadEnvVarWithDefault("ADO_API_VERSION", "7.1-preview.3")
+	config.APIVersion = ReadEnvVarWithDefault("ADO_API_VERSION", "7.1")
 	config.AuthUsername = ReadEnvVarWithDefault("ADO_AUTH_USERNAME", "ado-callback")
 }
 
