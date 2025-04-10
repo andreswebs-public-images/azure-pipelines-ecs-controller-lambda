@@ -108,7 +108,7 @@ func (config *ADOConfig) ReadFromEnv() {
 	config.AuthTokenPrefix = ReadEnvVarWithDefault("ADO_AUTH_PREFIX", "ado-callback")
 }
 
-// GetAuth generates the encoded token value for the 'Authorization: Basic <token>' header
+// GetAuth generates the encoded token value for the 'Authorization: Bearer <token>' header
 func (config *ADOConfig) GetAuth(token string) string {
 	authStr := fmt.Sprintf("%s:%s", config.AuthTokenPrefix, token)
 	return base64.StdEncoding.EncodeToString([]byte(authStr))

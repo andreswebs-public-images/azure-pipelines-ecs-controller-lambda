@@ -108,11 +108,11 @@ See:
 https://learn.microsoft.com/en-us/azure/devops/pipelines/process/invoke-checks?view=azure-devops
 */
 func ADOCallback(client *http.Client, config *ADOCallbackConfig) (data string, err error) {
-	token := config.Config.GetAuth(config.Payload.AuthToken)
+	// token := config.Config.GetAuth(config.Payload.AuthToken)
 
 	headers := map[string]string{
 		"Accept":        "application/json",
-		"Authorization": fmt.Sprintf("Bearer %s", token),
+		"Authorization": fmt.Sprintf("Bearer %s", config.Payload.AuthToken),
 	}
 
 	body := map[string]string{
