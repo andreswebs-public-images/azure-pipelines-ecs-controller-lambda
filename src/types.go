@@ -1,8 +1,10 @@
 package main
 
 import (
-	"encoding/base64"
 	"fmt"
+	"log/slog"
+	"os"
+	"strconv"
 	"strings"
 )
 
@@ -87,9 +89,10 @@ See:
 https://learn.microsoft.com/en-us/rest/api/azure/devops
 */
 type ADOConfig struct {
-	Instance     string // The ADO instance
-	APIVersion   string // The ADO API version
-	AuthUsername string // Prefix for the authentication token
+	Instance         string // The ADO instance
+	APIVersion       string // The ADO API version
+	AuthUsername     string // Prefix for the authentication token
+	AgentWaitSeconds int    // Default wait time for agent start
 }
 
 /*
@@ -106,12 +109,15 @@ func (config *ADOConfig) ReadFromEnv() {
 	config.Instance = fmt.Sprintf("%s/%s", adoDomain, adoOrg)
 	config.APIVersion = ReadEnvVarWithDefault("ADO_API_VERSION", "7.1")
 	config.AuthUsername = ReadEnvVarWithDefault("ADO_AUTH_USERNAME", "ado-callback")
-}
 
-// GetAuth generates the encoded token value for the 'Authorization: Basic <token>' header
-func (config *ADOConfig) GetAuth(token string) string {
-	authStr := fmt.Sprintf("%s:%s", config.AuthUsername, token)
-	return base64.URLEncoding.Strict().EncodeToString([]byte(authStr))
+	waitSecondsStr := ReadEnvVarWithDefault("ADO_AGENT_WAIT_SECONDS", "10")
+	waitSeconds, err := strconv.Atoi(waitSecondsStr)
+	if err != nil {
+		slog.Error("failed to parse ADO_AGENT_WAIT_SECONDS", slog.Any("err", err))
+		os.Exit(1)
+	}
+
+	config.AgentWaitSeconds = waitSeconds
 }
 
 /*

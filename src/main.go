@@ -88,6 +88,8 @@ func handler(ctx context.Context, event Event) error {
 			}
 		}
 
+		time.Sleep(time.Duration(adoCfg.AgentWaitSeconds) * time.Second)
+
 		callbackResponse, err := ADOCallback(&http.Client{}, &ADOCallbackConfig{
 			Config:  adoCfg,
 			Payload: payload,
