@@ -111,8 +111,8 @@ func ADOCallback(client *http.Client, config *ADOCallbackConfig) (data string, e
 	// token := config.Config.GetAuth(config.Payload.AuthToken)
 
 	headers := map[string]string{
-		"Accept":        "application/json",
-		"Authorization": fmt.Sprintf("Bearer %s", config.Payload.AuthToken),
+		"Accept": "application/json",
+		// "Authorization": fmt.Sprintf("Bearer %s", token),
 	}
 
 	body := map[string]string{
@@ -138,6 +138,8 @@ func ADOCallback(client *http.Client, config *ADOCallbackConfig) (data string, e
 	for k, v := range headers {
 		req.Header.Set(k, v)
 	}
+
+	req.SetBasicAuth(config.Config.AuthUsername, config.Payload.AuthToken)
 
 	res, err := client.Do(req)
 	if err != nil {

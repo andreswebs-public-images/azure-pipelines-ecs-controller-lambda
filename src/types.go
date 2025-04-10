@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/base64"
+	// "encoding/base64"
 	"fmt"
 	"strings"
 )
@@ -87,9 +87,9 @@ See:
 https://learn.microsoft.com/en-us/rest/api/azure/devops
 */
 type ADOConfig struct {
-	Instance        string // The ADO instance
-	APIVersion      string // The ADO API version
-	AuthTokenPrefix string // Prefix for the authentication token
+	Instance     string // The ADO instance
+	APIVersion   string // The ADO API version
+	AuthUsername string // Prefix for the authentication token
 }
 
 /*
@@ -97,22 +97,22 @@ ReadFromEnv reads the following required environment variables
 and populates the struct with the values:
   - ADO_DOMAIN: The ADO domain (default: dev.azure.com)
   - ADO_ORG: The ADO organization
-  - ADO_API_VERSION: The ADO API version (default: 7.1)
-  - ADO_AUTH_PREFIX: A prefix added to the Auth Token when building the Authorization header
+  - ADO_API_VERSION: The ADO API version (default: 7.1-preview.3)
+  - ADO_AUTH_USERNAME: Username for the 'basic auth' configuration, is ignored by the API
 */
 func (config *ADOConfig) ReadFromEnv() {
 	adoDomain := ReadEnvVarWithDefault("ADO_DOMAIN", "dev.azure.com")
 	adoOrg := ReadRequiredEnvVar("ADO_ORG")
 	config.Instance = fmt.Sprintf("%s/%s", adoDomain, adoOrg)
-	config.APIVersion = ReadEnvVarWithDefault("ADO_API_VERSION", "7.1")
-	config.AuthTokenPrefix = ReadEnvVarWithDefault("ADO_AUTH_PREFIX", "ado-callback")
+	config.APIVersion = ReadEnvVarWithDefault("ADO_API_VERSION", "7.1-preview.3")
+	config.AuthUsername = ReadEnvVarWithDefault("ADO_AUTH_USERNAME", "ado-callback")
 }
 
-// GetAuth generates the encoded token value for the 'Authorization: Bearer <token>' header
-func (config *ADOConfig) GetAuth(token string) string {
-	authStr := fmt.Sprintf("%s:%s", config.AuthTokenPrefix, token)
-	return base64.StdEncoding.EncodeToString([]byte(authStr))
-}
+// // GetAuth generates the encoded token value for the 'Authorization: Basic <token>' header
+// func (config *ADOConfig) GetAuth(token string) string {
+// 	authStr := fmt.Sprintf("%s:%s", config.AuthUsername, token)
+// 	return base64.StdEncoding.EncodeToString([]byte(authStr))
+// }
 
 /*
 ADOCallbackConfig contains the configurations value
