@@ -1,7 +1,7 @@
 package main
 
 import (
-	// "encoding/base64"
+	"encoding/base64"
 	"fmt"
 	"strings"
 )
@@ -108,11 +108,11 @@ func (config *ADOConfig) ReadFromEnv() {
 	config.AuthUsername = ReadEnvVarWithDefault("ADO_AUTH_USERNAME", "ado-callback")
 }
 
-// // GetAuth generates the encoded token value for the 'Authorization: Basic <token>' header
-// func (config *ADOConfig) GetAuth(token string) string {
-// 	authStr := fmt.Sprintf("%s:%s", config.AuthUsername, token)
-// 	return base64.StdEncoding.EncodeToString([]byte(authStr))
-// }
+// GetAuth generates the encoded token value for the 'Authorization: Basic <token>' header
+func (config *ADOConfig) GetAuth(token string) string {
+	authStr := fmt.Sprintf("%s:%s", config.AuthUsername, token)
+	return base64.URLEncoding.Strict().EncodeToString([]byte(authStr))
+}
 
 /*
 ADOCallbackConfig contains the configurations value

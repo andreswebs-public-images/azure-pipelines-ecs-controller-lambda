@@ -111,7 +111,8 @@ func ADOCallback(client *http.Client, config *ADOCallbackConfig) (data string, e
 	// token := config.Config.GetAuth(config.Payload.AuthToken)
 
 	headers := map[string]string{
-		"Accept": "application/json",
+		"Accept":       "application/json",
+		"Content-Type": "application/json",
 		// "Authorization": fmt.Sprintf("Bearer %s", token),
 	}
 
